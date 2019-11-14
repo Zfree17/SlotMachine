@@ -8,7 +8,7 @@ Public Class Form2
 
     End Sub
 End Class
-
+''''''''''''''''NEW FORM''''''''''''''''''
 Public Class Form1
 
     Dim count As Integer = 1 'fail counter

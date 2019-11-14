@@ -1,25 +1,74 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.902
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Gamble", "Gamble\Gamble.vbproj", "{D7A7F3A1-72B9-416A-8184-CF0522ED840D}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D7A7F3A1-72B9-416A-8184-CF0522ED840D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7A7F3A1-72B9-416A-8184-CF0522ED840D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7A7F3A1-72B9-416A-8184-CF0522ED840D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D7A7F3A1-72B9-416A-8184-CF0522ED840D}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {13DC759A-BF23-4DCC-9D1C-E6C7F9F43C4E}
-	EndGlobalSection
-EndGlobal
+Public Class Form2
+    Private Sub gamble_Click(sender As Object, e As EventArgs) Handles gamble.Click
+        Dim form As New Form1 'goes to the slot machine window
+        Me.Hide()
+        Form1.Show()
+        Form1.cashnum.Text = Me.user.Text
+
+
+    End Sub
+End Class
+
+Public Class Form1
+
+    Dim count As Integer = 1 'fail counter
+
+    Private Sub Pull_Click(sender As Object, e As EventArgs) Handles Pull.Click
+        Dim zero As String = 0
+        If Wnum.Text = String.Empty Then
+            MsgBox("Please place a bet in the 'Wager' textbox.")
+            Wnum.Text = zero 'placeholder
+
+        End If
+        Randomize()
+        num1.Text = Int(3 * Rnd() + 1) 'random between 1 and 3
+        num2.Text = Int(3 * Rnd() + 1)
+        num3.Text = Int(3 * Rnd() + 1)
+
+
+        cashnum.Text = cashnum.Text - Wnum.Text 'convert string to decimal
+
+        If count = 5 Then 'Every fifth fail you win automatically 
+            num1.Text = num2.Text
+            num3.Text = num2.Text
+            count = 0
+        End If
+
+        If num1.Text IsNot num2.Text And num1.Text IsNot num3.Text Then
+            count = count + 1
+        End If
+
+        If num1.Text = num2.Text And num1.Text = num3.Text Then
+            MsgBox("NICE! You win!") 'if all three numbers are the same you win
+            cashnum.Text = Convert.ToDecimal(cashnum.Text) + (Convert.ToDecimal(Wnum.Text) * Convert.ToDecimal(num1.Text))
+            count = 1
+        Else
+
+        End If
+
+        If cashnum.Text <= 0 Then
+            MsgBox("You're broke. Please leave.") 'if out of cash this message will show. also the "spin!" button will be disabled
+            Pull.Enabled = False
+            cashout.Enabled = False
+        End If
+
+
+    End Sub
+
+    Private Sub cashout_Click(sender As Object, e As EventArgs) Handles cashout.Click 'The "cashout" button that displays your balance and closes the program
+        display()
+    End Sub
+
+
+    Public Function display()
+        Dim answer As Integer
+        answer = MessageBox.Show("Are you sure you want to cashout?", "Leaving already?", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        If answer = vbYes Then
+            MsgBox("You're Balance is $" & cashnum.Text)
+            Me.Close()
+        Else
+
+        End If
+    End Function
+
+End Class
